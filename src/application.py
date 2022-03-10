@@ -6,6 +6,12 @@ import random
 
 WORD_LENGTH = 5
 
+class text_colors:
+    YELLOW = '\033[93m'
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    END = '\033[0m'
+
 
 def load_dicts():
     common_words = []
@@ -162,7 +168,7 @@ def test2():
     index_map_history = []
     common_words, all_words = load_dicts()
     todays_word = get_todays_word(common_words)
-    print("cheating: todays word is", todays_word)
+    #print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
     guesses = 0
