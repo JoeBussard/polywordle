@@ -7,13 +7,10 @@ import random
 WORD_LENGTH = 5
 
 class text_colors:
-    BOLD = '\033[1m'
-    YELLOW = BOLD + '' + '\033[93m'
-    GREEN = BOLD + '' + '\033[96m'
-    RED = BOLD + '' + '\033[91m'
+    YELLOW = '\033[93m'
+    GREEN = '\033[92m'
+    RED = '\033[91m'
     END = '\033[0m'
-
-text_hash = {'yellow':text_colors.YELLOW,'green':text_colors.GREEN,'red':text_colors.RED,'white':''}
 
 
 def load_dicts():
@@ -81,7 +78,7 @@ def check_guess(guess, word):
     # if the same letter is yellow AND green, it gets return as green only.
     result = {}
     for i in range(5):
-        result[i] = "yellow" if yellow_letters[i] else "red"
+        result[i] = "yellow" if yellow_letters[i] else "black"
         result[i] = "green" if green_letters[i] else result[i]
     #print(result)
     return result
@@ -113,13 +110,13 @@ def pretty_print_keyboard(key_map):
             print(f'\n\n    ', end='')
         x = y.upper()
         if key_map[y] == 'gray':
-            print(                    x,                  "  ", sep='', end='')
+            print(x, '⬜', "  ", sep='',end='')
         elif key_map[y] == 'yellow':
-            print(text_colors.YELLOW, x, text_colors.END, "  ", sep='', end='')
+            print(x, '🟨', "  ", sep='', end='')
         elif key_map[y] == 'green':
-            print(text_colors.GREEN,  x, text_colors.END, "  ", sep='', end='')
-        elif key_map[y] == 'red':
-            print(text_colors.RED,    x, text_colors.END, "  ", sep='', end='')
+            print(x, '🟩', "  ", sep='', end='')
+        elif key_map[y] == 'black':
+            print(x, '⬛', "  ", sep='', end='')
     print("")
     print("")
 
@@ -137,11 +134,10 @@ def update_all(guess, word, key_map, index_map_history):
 
 def create_emoji_hash():
     emoji_hash = {}
-    emoji_hash['white']  = '⬜'
+    emoji_hash['white'] = '⬜'
     emoji_hash['yellow'] = '🟨'
-    emoji_hash['green']  = '🟩'
-    emoji_hash['black']  = '⬛'
-    emoji_hash['red']    = '🟥'
+    emoji_hash['green'] = '🟩'
+    emoji_hash['black'] = '⬛'
     return emoji_hash
 
 def pretty_print_share_box(index_color_map_history, emoji_hash):
@@ -150,36 +146,17 @@ def pretty_print_share_box(index_color_map_history, emoji_hash):
             print(emoji_hash[row[column]], sep='', end='')
         print("")
 
-def generate_share_box(index_color_map_history, emoji_hash):
-    my_string = ''
-    for row in index_color_map_history:
-        for column in row:
-            my_string += emoji_hash[row[column]]
-        my_string += f'\n'
-    return my_string
 
 def pretty_print_blank_lines(emoji_hash, color):
     for x in range(0, 5):
-        print("", emoji_hash[color], " ", sep='', end='')
+        print(" ", emoji_hash[color], "  ", sep='', end='')
     print(f"\n")
-
-def generate_losing_message(the_answer):
-    print("You lost! The answer was", the_answer)
-
-def generate_share_text(guesses, index_color_map_history, emoji_hash, game_day):
-    string = ''
-    string += "Polywordle #" + str(game_day)
-    guess_num = guesses if guesses < 6 else 'X'
-    string += " " + str(guesses) + "/6"
-    string += f'\n'
-    string += generate_share_box(index_color_map_history, emoji_hash)
-    return string
 
 def pretty_print_index_color(index_color_map, guess, emoji_hash):
     guess_list = list(guess)
     for x in index_color_map:
     #    print('line 122',x)
-        print(text_hash[index_color_map[x]], guess[x].upper(), text_colors.END,"  ", sep='', end='')
+        print(guess[x].upper(), emoji_hash[index_color_map[x]],"  ", sep='', end='')
     print(f"\n")
 
 def get_todays_word(common_words):
@@ -190,9 +167,8 @@ def test2():
     guess_history = []
     index_map_history = []
     common_words, all_words = load_dicts()
-    game_day = 0
     todays_word = get_todays_word(common_words)
-    print("cheating: todays word is", todays_word)
+    #print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
     guesses = 0
@@ -236,29 +212,15 @@ def test2():
         if current_guess == todays_word:
             break
     if current_guess == todays_word:
-        if guesses == 1:
-            print("Unbelievable!")
-        elif guesses == 2:
-            print("Spectacular!")
-        elif guesses == 3:
-            print("Amazing")
-        elif guesses == 4:
-            print("Good job")
-        elif guesses == 5:
-            print("Pretty good I guess")
-        elif guesses == 6:
-            print("That was close")
+        print("you won")
     else:
-        print("Bummer! The word was", todays_word)
+        print("try again next time.")
 
-    print(f"\nShare your score:\n")
-    print(generate_share_text(guesses, index_map_history, emoji_hash, game_day))
-
-    #pretty_print_share_box(index_map_history, emoji_hash)
+    print("share your score.")
+    pretty_print_share_box(index_map_history, emoji_hash)
     exit(0)
 
 test2()
-
 
 
 
