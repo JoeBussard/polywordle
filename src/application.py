@@ -98,8 +98,10 @@ def create_keyboard_map():
 def pretty_print_keyboard(key_map):
     print("")
     for y in key_map:
-        if y == 'a' or y == 'z':
-            print('')
+        if y == 'a':
+            print(f'\n\n  ', end='')
+        elif y == 'z':
+            print(f'\n\n    ', end='')
         x = y.upper()
         if key_map[y] == 'gray':
             print(x, '⬜', "  ", sep='',end='')
@@ -139,12 +141,17 @@ def pretty_print_share_box(index_color_map_history, emoji_hash):
         print("")
 
 
+def pretty_print_blank_lines(emoji_hash, color):
+    for x in range(0, 5):
+        print(" ", emoji_hash[color], "  ", sep='', end='')
+    print(f"\n")
+
 def pretty_print_index_color(index_color_map, guess, emoji_hash):
     guess_list = list(guess)
     for x in index_color_map:
     #    print('line 122',x)
         print(guess[x].upper(), emoji_hash[index_color_map[x]],"  ", sep='', end='')
-    print("")
+    print(f"\n")
 
 def get_todays_word(common_words):
     todays_word = random.choice(common_words)
@@ -158,34 +165,43 @@ def test2():
     print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
+    guesses = 0
     #index_color_map_history = []
 
     print("Welcome to Polywordle [version 0.1]")
+    for x in range(guesses, 6):
+        pretty_print_blank_lines(emoji_hash, 'white')
+
     pretty_print_keyboard(key_map)
 # TODO - add the grid of guesses
 
-    guesses = 0
     while guesses < 6:
         invalid_guess = True
         while invalid_guess:
-            current_guess = input(("Guess #"+ str(guesses)+ ": "))
+            current_guess = input(("Guess #"+ str(guesses+1)+ ": "))
             if len(current_guess) == 5:
                 pattern = re.compile("[A-Za-z]+")
-                if pattern.fullmatch(current_guess): break
+                if pattern.fullmatch(current_guess):
+                    if current_guess in all_words: break
+                    else: print("Not in dictionary.")
+                else: print("Must only be letters.")
+            else: print("Must be 5 letters.")
+
         current_guess = current_guess.lower()
 
         guesses += 1
         # note sure if this is right
         index_color_map, key_map = update_all(current_guess, todays_word, key_map, index_map_history)
-        #index_r_map_history.append(index_color_map)
         guess_history.append(current_guess)
-    #    print("line 153", index_map_history[0], "################", guess_history)
+
         # clear screen
         for x in range(50):print("")
         for x in range(guesses):
-    #        print(x)
             pretty_print_index_color(index_map_history[x], guess_history[x], emoji_hash)
-        #pretty_print_index_color(index_color_map, current_guess, emoji_hash)
+
+        for x in range(guesses, 6):
+            pretty_print_blank_lines(emoji_hash, 'white')
+
         pretty_print_keyboard(key_map)
         if current_guess == todays_word:
             break
