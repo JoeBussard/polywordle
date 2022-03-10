@@ -2,8 +2,24 @@
 # copyright joe bussard
 
 import re
+import random
 
 WORD_LENGTH = 5
+
+
+def load_dicts():
+    common_words = []
+    all_words = []
+    with open('common-fives') as f:
+        data_common = f.read()
+        for x in data_common.split():
+            common_words += [x]
+    with open('all-fives') as f:
+        data_all = f.read()
+        for word in data_all.split():
+            all_words += [word]
+    return common_words, all_words
+
 
 def generate_word(length):
     return 'pasta'
@@ -130,11 +146,16 @@ def pretty_print_index_color(index_color_map, guess, emoji_hash):
         print(guess[x].upper(), emoji_hash[index_color_map[x]],"  ", sep='', end='')
     print("")
 
+def get_todays_word(common_words):
+    todays_word = random.choice(common_words)
+    return todays_word
 
 def test2():
     guess_history = []
     index_map_history = []
-    todays_word = 'whack'
+    common_words, all_words = load_dicts()
+    todays_word = get_todays_word(common_words)
+    print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
     #index_color_map_history = []
