@@ -50,6 +50,26 @@ def generate_test_cases():
             'chees', 'paced', 'cough', 'under']
     return cases
 
+def check_guess_optimized(guess, word):
+    """trying to get this to o(n) time, but still o(n^2) to check yellows."""
+    guess_hash, word_hash, result_hash = {}, {}, {}
+    for i in range(5):
+        guess_hash[i] = guess[i]
+        word_hash[i] = word[i]
+        result_hash[i] = "red"
+        if guess_hash[i] == word_hash[i]:
+            result_hash[i] = "green"
+            guess_hash[i], word_hash[i] = "", ""
+
+    for guess_key in range(5):
+        for word_key in range(5):
+            if guess_hash[guess_key] == word_hash[word_key]:
+                result_hash[guess_key] = "yellow"
+                guess_hash[guess_key], word_hash[word_key] = "", ""
+    print("with check guess optimized, returning:", result_hash)
+    return result_hash
+
+
 def check_guess(guess, word):
     """checks if a guess matches a word. returns a hash map.
     the hash map is a mapping from i in range(0,6) and 'yellow', 'green', or 'red'"""
@@ -146,7 +166,7 @@ def update_all(guess, word, key_map, index_map_history):
     and it updates the index map history. Index map history is what I
     call the mapping of letters in each guess to their colors."""
     # check_guess returns a map from [0...4] to [green, yellow, etc]
-    index_color_map = check_guess(guess, word)
+    index_color_map = check_guess_optimized(guess, word)
     index_map_history.append(index_color_map)
     key_map = update_keyboard(key_map, index_color_map, guess)
     # i dont know what this should return
@@ -281,6 +301,7 @@ def test2():
             print("That was close")
     else:
         print("Bummer! The word was", todays_word)
+    print("If you feel this word is unfair, please open an issue on GitHub.com/JoeBussard/PolyWordle")
 
     print(f"\nShare your score:\n")
     print(generate_share_text(guesses, index_map_history, emoji_hash, game_day))
