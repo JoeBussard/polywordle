@@ -4,7 +4,7 @@
 import re
 import random
 
-WORD_LENGTH = 5
+CHEATING = False
 
 class text_colors:
     """Defines how to use colors for terminals
@@ -36,20 +36,6 @@ def load_dicts():
             all_words += [word]
     return common_words, all_words
 
-
-def generate_word(length):
-    """legacy"""
-    return 'pasta'
-
-def generate_test_cases():
-    """legacy"""
-    cases = ['pasta', 'ppppp', 'aaaaa', 'sssss', \
-            'ttttt', 'altar', 'whack', 'crack',  \
-            'atsap', 'sapta', 'tasta', 'tatat', \
-            'ooooo', 'wowow', 'snaps', 'licks', \
-            'chees', 'paced', 'cough', 'under']
-    return cases
-
 def check_guess_optimized(guess, word):
     """trying to get this to o(n) time, but still o(n^2) to check yellows."""
     guess_hash, word_hash, result_hash = {}, {}, {}
@@ -58,63 +44,15 @@ def check_guess_optimized(guess, word):
         word_hash[i] = word[i]
         result_hash[i] = "red"
         if guess_hash[i] == word_hash[i]:
-            #print(guess_hash[i]," is green")
             result_hash[i] = "green"
             guess_hash[i], word_hash[i] = "", ""
 
     for guess_key in range(5):
         for word_key in range(5):
-            #print("checking if", guess_hash[guess_key], "will be yellow compared to", word_hash[word_key], "results is", result_hash[guess_key])
             if guess_hash[guess_key] == word_hash[word_key] and result_hash[guess_key] == "red":
-            #    print("yes, ", guess_hash[guess_key], "is yellow compared to", word_hash[word_key])
                 result_hash[guess_key] = "yellow"
                 guess_hash[guess_key], word_hash[word_key] = "", ""
     return result_hash
-
-
-def check_guess(guess, word):
-    """checks if a guess matches a word. returns a hash map.
-    the hash map is a mapping from i in range(0,6) and 'yellow', 'green', or 'red'"""
-
-    # print("----------------------------")
-    guess_list = list(guess)
-    word_list = list(word)
-
-    green_letters = [''] * WORD_LENGTH          # array of letters that are correct & in right spot
-    yellow_letters = [''] * WORD_LENGTH         # array of letters that are in the word but wrong spot
-    gray_letters = [''] * WORD_LENGTH           # letters that aren't in the word at all
-    remaining_letters = word_list[:]            # make a copy of the word
-
-    index = 0
-    for g, w in zip(guess_list, word_list):     # first take out the green letters
-        if g == w:
-            green_letters[index] = g
-            remaining_letters[index] = ''
-        index += 1
-
-    index = 0
-
-    # print("letters eligible for yellow:", remaining_letters)
-
-    for g in guess_list:                       # letters that aren't green may be yellow.
-        word_index = 0
-        for r in remaining_letters:
-            if g == r:
-                yellow_letters[index] = g
-                remaining_letters[word_index] = ''
-                word_index += 1
-                break
-            word_index += 1
-        index += 1
-
-    # green letters take priority over yellow letters
-    # if the same letter is yellow AND green, it gets return as green only.
-    result = {}
-    for i in range(5):
-        result[i] = "yellow" if yellow_letters[i] else "red"
-        result[i] = "green" if green_letters[i] else result[i]
-    #print(result)
-    return result
 
 def update_keyboard(key_map, color_map, guess):
     """Input is a keyboard map. It updates that keyboard map and returns it.
@@ -208,10 +146,6 @@ def pretty_print_blank_lines(emoji_hash, color):
         print("", emoji_hash[color], " ", sep='', end='')
     print(f"\n")
 
-def generate_losing_message(the_answer):
-    """useless"""
-    print("You lost! The answer was", the_answer)
-
 def generate_share_text(guesses, index_color_map_history, emoji_hash, todays_word_game_id):
     """generates the full share-text that you copy and paste for friends."""
     string = ''
@@ -242,7 +176,6 @@ def get_todays_word(common_words):
 def get_predetermined_word(common_words, word_game_id):
     """could be called from a client. decoding is done server-side."""
     real_word_index = int(decode_word_game_id(word_game_id))
-    print("get pre word", real_word_index)
     predetermined_word = common_words[real_word_index]
     return predetermined_word
 
@@ -255,7 +188,6 @@ def ask_user_new_word_or_word_from_id(common_words):
     user_input = str(input())
     decoded_word = ""
     if len(user_input) < 8 and len(user_input) > 3:
-        print("ok length")
         try:
             decoded_word = get_predetermined_word(common_words, user_input)
         except:
@@ -278,12 +210,10 @@ def test2():
         todays_word = shared_word
     else:
         todays_word_game_id, todays_word = get_todays_word(common_words)
-    #print("cheating: today is word number", todays_word_game_id, ":", todays_word)
-    #print("cheating: todays word is", todays_word)
+    if CHEATING: print("[cheating] todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
     guesses = 0
-    #index_color_map_history = []
 
     print("Welcome to Polywordle [version 0.2]")
 
@@ -348,31 +278,3 @@ def test2():
 
 test2()
 
-def test():
-    create_turn_list()
-    exit(1)
-    key_map = create_keyboard_map()
-    print(key_map)
-
-
-    test_word = generate_word(WORD_LENGTH)
-    test_input = input("guess a word")
-    check_guess(test_input, test_word)
-    check_guess("sapta", test_word)
-    pretty_print_keyboard(key_map)
-    key_map = update_keyboard(key_map, check_guess("pasta", test_word), "pasta")
-    pretty_print_keyboard(key_map)
-    print(key_map)
-    for x in key_map:
-        if key_map[x] == 'green':
-            print(key_map[x])
-
-    exit(2)
-    check_guess("astap", test_word)
-    for test in generate_test_cases():
-        check_guess(test, "bozos")
-    for test in generate_test_cases():
-        check_guess(test, "aaaaa")
-
-
-#test()
