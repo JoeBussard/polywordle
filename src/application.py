@@ -22,6 +22,12 @@ text_hash = {'yellow':text_colors.YELLOW,'green':text_colors.GREEN,'red':text_co
 
 
 def load_dicts_from_json():
+    """ loads 2 lists of words: all words, used to check
+    that the user made a legitimate guess; and common words,
+    used to generate the word for the user to find.
+    using a dictionary/JSON means i can remove unwanted words
+    from common_words without changing index for other words
+    as was brought up in issue #3."""
     common_words = {}
     all_words = {}
     with open('common_words.json') as f:
