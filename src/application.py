@@ -3,8 +3,9 @@
 
 import re
 import random
+import json
 
-CHEATING = False
+CHEATING = True
 
 class text_colors:
     """Defines how to use colors for terminals
@@ -18,6 +19,17 @@ class text_colors:
 
 # Easier lookup (text_hash[x]) than text_colors.x
 text_hash = {'yellow':text_colors.YELLOW,'green':text_colors.GREEN,'red':text_colors.RED,'white':'', 'end':text_colors.END}
+
+
+def load_dicts_from_json():
+    common_words = {}
+    all_words = {}
+    with open('common_words.json') as f:
+        common_words = json.load(f)
+    with open('all_words.json') as f:
+        all_words = json.load(f)
+    return common_words, all_words
+
 
 def load_dicts():
     """Opens the 2 dictionaries in use, a smaller dictionary
@@ -96,11 +108,6 @@ def pretty_print_keyboard(key_map):
     print("")
     print("")
 
-def create_turn_list():
-    """Might get rid of this."""
-    turns = [ [] * 5] * 6
-    #print(turns)
-
 def update_all(guess, word, key_map, index_map_history):
     """Run this command after each turn.  It updates the keyboard map,
     and it updates the index map history. Index map history is what I
@@ -167,7 +174,10 @@ def pretty_print_index_color(index_color_map, guess, emoji_hash):
 def get_todays_word(common_words):
     """picks a random word and obfuscates it."""
     rand_max = len(common_words)
-    todays_word_index = random.choice(range(rand_max))
+    todays_word_index = ""
+    while todays_word_index not in common_words:
+        todays_word_index = str(random.choice(range(rand_max)))
+
     fake_id_letters = 'abcdefABCDEF1234567890'
     todays_word_game_id = random.choice(fake_id_letters) + str(random.choice(range(10))) + str(todays_word_index) + random.choice(fake_id_letters)
     todays_word = common_words[todays_word_index]
@@ -175,7 +185,7 @@ def get_todays_word(common_words):
 
 def get_predetermined_word(common_words, word_game_id):
     """could be called from a client. decoding is done server-side."""
-    real_word_index = int(decode_word_game_id(word_game_id))
+    real_word_index = str(decode_word_game_id(word_game_id))
     predetermined_word = common_words[real_word_index]
     return predetermined_word
 
@@ -202,7 +212,7 @@ def test2():
     3. repeat."""
     guess_history = []
     index_map_history = []
-    common_words, all_words = load_dicts()
+    common_words, all_words = load_dicts_from_json()
     game_day = 0
     shared_id, shared_word = ask_user_new_word_or_word_from_id(common_words)
     if shared_word and shared_id:
@@ -229,7 +239,7 @@ def test2():
             if len(current_guess) == 5:
                 pattern = re.compile("[A-Za-z]+")
                 if pattern.fullmatch(current_guess):
-                    if current_guess.lower() in all_words: break
+                    if current_guess.lower() in list(all_words.values()): break
                     else: print("Not in dictionary.")
                 else: print("Must only be letters.")
             else: print("Must be 5 letters.")
