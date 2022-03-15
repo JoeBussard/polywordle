@@ -4,11 +4,11 @@ A remake of Wordle, done in Python. Polywordle is not affiliated with the New Yo
 
 ### Installation
 
-Clone the git repository.
+`git clone https://github.com/joebussard/polywordle`
 
 ### Running
 
-To play in the terminal, run `cd polywordle/src && python application.py`
+`cd polywordle/src && python application.py`
 
 ### Options
 
