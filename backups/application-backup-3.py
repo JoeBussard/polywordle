@@ -58,15 +58,12 @@ def check_guess_optimized(guess, word):
         word_hash[i] = word[i]
         result_hash[i] = "red"
         if guess_hash[i] == word_hash[i]:
-            #print(guess_hash[i]," is green")
             result_hash[i] = "green"
             guess_hash[i], word_hash[i] = "", ""
 
     for guess_key in range(5):
         for word_key in range(5):
-            #print("checking if", guess_hash[guess_key], "will be yellow compared to", word_hash[word_key], "results is", result_hash[guess_key])
-            if guess_hash[guess_key] == word_hash[word_key] and result_hash[guess_key] == "red":
-            #    print("yes, ", guess_hash[guess_key], "is yellow compared to", word_hash[word_key])
+            if guess_hash[guess_key] == word_hash[word_key] and result_hash[guess_key] is None:
                 result_hash[guess_key] = "yellow"
                 guess_hash[guess_key], word_hash[word_key] = "", ""
     return result_hash
@@ -278,7 +275,7 @@ def test2():
         todays_word = shared_word
     else:
         todays_word_game_id, todays_word = get_todays_word(common_words)
-    print("cheating: today is word number", todays_word_game_id, ":", todays_word)
+    #print("cheating: today is word number", todays_word_game_id, ":", todays_word)
     #print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
