@@ -278,7 +278,7 @@ def test2():
         todays_word = shared_word
     else:
         todays_word_game_id, todays_word = get_todays_word(common_words)
-    print("cheating: today is word number", todays_word_game_id, ":", todays_word)
+    #print("cheating: today is word number", todays_word_game_id, ":", todays_word)
     #print("cheating: todays word is", todays_word)
     key_map = create_keyboard_map()
     emoji_hash = create_emoji_hash()
