@@ -20,6 +20,8 @@ class text_colors:
 # Easier lookup (text_hash[x]) than text_colors.x
 text_hash = {'yellow':text_colors.YELLOW,'green':text_colors.GREEN,'red':text_colors.RED,'white':'', 'end':text_colors.END}
 
+performance_hash = {1:'Unbelievable!', 2:'Spectacular!', 3:'Amazing!',4:'Well done.',5:'Pretty good.', 6:'That was close!'}
+
 
 def load_dicts_from_json():
     """ loads 2 lists of words: all words, used to check
@@ -270,18 +272,7 @@ def test2():
             break
     if current_guess == todays_word:
         print(text_hash['green'], end='')
-        if guesses == 1:
-            print("Unbelievable!")
-        elif guesses == 2:
-            print("Spectacular!")
-        elif guesses == 3:
-            print("Amazing!")
-        elif guesses == 4:
-            print("Well done!")
-        elif guesses == 5:
-            print("Pretty good...")
-        elif guesses == 6:
-            print("That was close!")
+        print(performance_hash[guesses])
         print(text_hash['end'], end='')
     else:
         print(text_hash['red'], "Bummer! The word was ", todays_word.upper(), text_hash['end'], sep='')
