@@ -5,7 +5,7 @@ import re
 import random
 import json
 
-CHEATING = True
+CHEATING = False
 
 class text_colors:
     """Defines how to use colors for terminals
@@ -293,4 +293,3 @@ def test2():
     exit(0)
 
 test2()
-
